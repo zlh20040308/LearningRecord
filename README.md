@@ -12,8 +12,9 @@
 * [Day   1    (2024-04-12)](#0)  
 * [Day   2    (2024-04-13)](#1)  
 * [Day   3    (2024-04-14)](#2)  
-* [Day   4    (2024-04-15)](#3)
-* [Day   5    (2024-04-16)](#4)
+* [Day   4    (2024-04-15)](#3)  
+* [Day   5    (2024-04-16)](#4)  
+* [Day   6    (2024-04-17)](#5)  
   
 
 <span id="0"></span>
@@ -110,14 +111,14 @@ let other: &str = "other_hello";//你不能脱离"other_hello"去谈str的类型
 use std::ops::Add;
 impl Add<u64> for u32 {
     type Output = u64;
-    fn add(self, other: u64) -> Self::Output {
+    fn add(self， other: u64) -> Self::Output {
         (self as u64) + other
     }
 }
 fn main() {
     let a = 1u32;
     let b = 2u64;
-    assert_eq!(a + b, 3);
+    assert_eq!(a + b， 3);
 }
 ```  
 3. 今天没写rustlings，《Rust编程之道》坏（我）我（太）好（菜）事（了）  
@@ -184,7 +185,7 @@ fn main() {
         先来看一段代码：  
 
 ```rust  
-fn max_of_refs(a: &i32, b: &i32) -> &i32 {
+fn max_of_refs(a: &i32， b: &i32) -> &i32 {
     if *a > *b {
         a
     } else {
@@ -210,7 +211,7 @@ Rust 的设计目标之一是在编译时提供尽可能多的保障，以减少
 而一旦我们为其指定了生命周期：  
 
 ```rust  
-fn max_of_refs<'a>(a: &'a i32, b: &'a i32) -> &'a i32 {
+fn max_of_refs<'a>(a: &'a i32， b: &'a i32) -> &'a i32 {
     if *a > *b {
         a
     } else {
@@ -227,7 +228,7 @@ fn max_of_refs<'a>(a: &'a i32, b: &'a i32) -> &'a i32 {
 观察下面这段代码，我之前一直不理解的是 **'a** 为什么是一个泛型参数，既然是泛型，那么在调用这个函数的时候 **'a** 会被替代成什么呢?  
 
 ```rust  
-fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+fn longest<'a>(x: &'a str， y: &'a str) -> &'a str {
     if x.len() > y.len() {
         x
     } else {
@@ -273,13 +274,13 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 
 ```rust  
 fn main() {
-    let mut list = vec![1, 2, 3];
-    println!("Before defining closure: {:?}", list);
+    let mut list = vec![1， 2， 3];
+    println!("Before defining closure: {:?}"， list);
 
     let mut borrows_mutably = || list.push(7);
 
     borrows_mutably();
-    println!("After calling closure: {:?}", list);
+    println!("After calling closure: {:?}"， list);
 }
 ```  
 
@@ -300,14 +301,14 @@ fn main() {
     let my_option: Option<i32> = Some(1);
     match my_option {
         Some(value) => {
-            println!("Value: {}", value);
+            println!("Value: {}"， value);
         }
         None => {
             println!("No value");
         }
     }
 
-    println!("Value: {:?}", my_option);
+    println!("Value: {:?}"， my_option);
 }
 ```  
 
@@ -330,14 +331,14 @@ fn main() {
     let my_option: Option<String> = Some(String::from("hello"));
     match my_option {
         Some(value) => {
-            println!("Value: {}", value);
+            println!("Value: {}"， value);
         }
         None => {
             println!("No value");
         }
     }
 
-    println!("Value: {:?}", my_option);
+    println!("Value: {:?}"， my_option);
 }
 ```  
 
@@ -352,7 +353,7 @@ error[E0382]: borrow of partially moved value: `my_option`
 4  |         Some(value) => {
    |              ----- value partially moved here
 ...
-12 |     println!("Value: {:?}", my_option);
+12 |     println!("Value: {:?}"， my_option);
    |                             ^^^^^^^^^ value borrowed here after partial move
    |
 ```  
@@ -363,12 +364,12 @@ error[E0382]: borrow of partially moved value: `my_option`
 
 ```rust  
 impl<T: PartialOrd + Copy> LinkedList<T> {
-    pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self {
+    pub fn merge(list_a: LinkedList<T>， list_b: LinkedList<T>) -> Self {
         let mut merged_list: LinkedList<T> = LinkedList::new();
         let mut current_a: Option<NonNull<Node<T>>> = list_a.start;
         let mut current_b: Option<NonNull<Node<T>>> = list_b.start;
 
-        while let (Some(node_ptr_a), Some(node_ptr_b)) = (current_a, current_b) {
+        while let (Some(node_ptr_a)， Some(node_ptr_b)) = (current_a， current_b) {
             let node_a = unsafe { &*node_ptr_a.as_ptr() };
             let node_b = unsafe { &*node_ptr_b.as_ptr() };
 
@@ -381,14 +382,14 @@ impl<T: PartialOrd + Copy> LinkedList<T> {
             }
         }
 
-        // Add remaining elements from list_a, if any
+        // Add remaining elements from list_a， if any
         while let Some(node_ptr) = current_a {
             let node = unsafe { &*node_ptr.as_ptr() };
             merged_list.add(node.val);
             current_a = node.next;
         }
 
-        // Add remaining elements from list_b, if any
+        // Add remaining elements from list_b， if any
         while let Some(node_ptr) = current_b {
             let node = unsafe { &*node_ptr.as_ptr() };
             merged_list.add(node.val);
@@ -405,11 +406,11 @@ impl<T: PartialOrd + Copy> LinkedList<T> {
 后来这才发现是我想当然了，我以为这么复杂的类型应该不会实现`Copy`这一特性，但没办法，穷途末路，我只好打开源码，结果你猜怎么着：  
 
 ```rust  
-#[stable(feature = "nonnull", since = "1.25.0")]
+#[stable(feature = "nonnull"， since = "1.25.0")]
 impl<T: ?Sized> Copy for NonNull<T> {}
 ```  
 
-这段代码表示对于 NonNull<T> 类型，实现了 Copy 特性。#[stable(feature = "nonnull", since = "1.25.0")] 是一个属性注解，表示此实现是稳定的，并且从 Rust 版本 1.25.0 开始可用。  
+这段代码表示对于 NonNull<T> 类型，实现了 Copy 特性。#[stable(feature = "nonnull"， since = "1.25.0")] 是一个属性注解，表示此实现是稳定的，并且从 Rust 版本 1.25.0 开始可用。  
 
 OMG...他居然实现了！？！？！那没事了zzzzzzzzzz  
 
@@ -435,4 +436,143 @@ chatgpt > Rust权威指南 > b站教程 > 技术blog > 源码
 ```  
 我太依赖chatgpt了，对于Rust这门迭代速度十分快的语言，他的数据实在不够，我今天一再问他“NonNull<T>有没有实现Copy”，它一直在回我“没有“，真是气死我了。
 
-2. 令我烦躁的是，感觉最近效率低下，我有在以正常的速度进步吗？
+2. 令我烦躁的是，感觉最近效率低下，我有在以正常的速度进步吗？  
+
+<span id="5"></span>
+## Day 6  
+
+### 计划  
+
+***  
+
+1. 跟进《RISC-V上的操作系统 - 汪辰 - 2021春》，做lab  
+2. 写rustlings  
+
+
+### 成果  
+
+***  
+
+1. 课堂笔记  
+    - ELF介绍  
+
+ELF（Executable Linkable Format）是一种 Unix-like 系统上的二进制文件格式标准。  
+
+![ELF.png](pic/ELF.png)  
+
+- ELF Header  
+
+在这个文件头里面，比如说是这个程序，这个文件是运行在哪一种体系架构上的，因为我们知道这个不同的体系架构，它的这个ELF的里面的信息可能是不一样的，那他需要在这个头里面对它进行解释，然后还有一些版本号信息都在这个地方。  
+
+- Section（节）  
+
+- Segment（段）
+
+当我们运行一个可执行文件时，它要先被加载到内存里面去的，当加载的时候，如果不加区分地把这些节加载进去，可能会引入一个问题，操作系统在加载这些节的时候，一般情况下都会按照一定的宽度进行对齐，比如说是按照4k来进行对齐的话，假设这个.text这个节占了40个字节，那么它也会占一个4k大小的区域,剩下的部分它就不会再放别的东西了，如果都按这种方式去做的话，虽然这个文件内容不大，可放到内存里面，一展开可能就要占很大的内存，就要浪费。
+
+那么在真正把它加载到内存里面运行的时候呢，那么规定的时候呢是根据这些节的属性来进行规定的，比如说我们会发现text的这个节和.init,这个节里面放的都是一些可执行程序指令，那么我们可以把它放在一起，我们把它就把它叫做一个叫做Segment  
+
+- Program Header Table（运行视图）  
+
+每一个Segment要多大，占多少空间，具体加载到什么位置，这些信息的描述都是在Program Header Table里面去进行描述的，这个里面描述的信息是在运行的时候才会用到的  
+
+- Section Header Table（链接视图）
+
+Section Header Table记录了这个文件里面有哪些Section，这些节分别分别代表了什么样的含义，以及这些节分别有多大，在什么位置  
+
+Section Header Table实际上是描述了一个从链接的角度去描述了这个文件里面的内容啊,因为链接的时候会涉及到这部分的内容  
+
+- 函数调用约定  
+
+![Function.png](pic/Function.png)  
+
+2. 做题记录  
+    - `algorithm1.rs`   
+
+首先来解决一下昨天的`NonNull<T>`是什么情况，这是`《The Rust Reference》`中的描述  
+
+> 在使用原始指针构建数据结构时，这通常是正确的选择，但由于其额外属性，使用起来更加危险。如果不确定是否应该使用NonNull<T>，那就直接使用*mut T吧！  
+> 
+> 与mut T不同，指针必须始终为非空，即使指针从不被解引用。这是为了枚举可以使用此禁止值作为区分标志——Option<NonNull<T>>与mut T具有相同的大小。然而，如果指针未被解引用，它仍然可能悬挂。  
+> 
+> 与*mut T不同，NonNull<T> 被选择为对 T 协变的。这使得在构建协变类型时可以使用NonNull<T>，但如果在不应该实际为协变的类型中使用，则会引入不安全的风险（即使从技术上讲，只有调用不安全函数才可能导致不安全性）。  
+> 
+> 与mut T不同，指针必须始终是非空的，即使从不解引用该指针也是如此。这是为了枚举可以使用该禁止值作为区分标志——Option<NonNull<T>>与mut T具有相同的大小。然而，如果未解引用指针，指针仍然可能悬空。  
+
+一些接口的描述：  
+- `pub const unsafe fn new_unchecked(ptr: *mut T) -> NonNull<T>`  
+
+```rust  
+创建一个新的 NonNull。
+
+安全性
+ptr 必须是非空的。
+
+示例
+use std::ptr::NonNull;
+
+let mut x = 0u32;
+let ptr = unsafe { NonNull::new_unchecked(&mut x as *mut _) };
+```  
+
+- `pub const fn as_ptr(self) -> *mut T`  
+
+```rust  
+获取底层指针。
+
+示例
+use std::ptr::NonNull;
+
+let mut x = 0u32;
+let ptr = NonNull::new(&mut x).expect("ptr is null!");
+
+let x_value = unsafe { *ptr.as_ptr() };
+assert_eq!(x_value， 0);
+
+unsafe { *ptr.as_ptr() += 2; }
+let x_value = unsafe { *ptr.as_ptr() };
+assert_eq!(x_value， 2);
+```  
+- `Copy`特型  
+```rust  
+#[stable(feature = "nonnull"， since = "1.25.0")]
+impl<T: ?Sized> Copy for NonNull<T> {}
+```  
+实现了`Copy`特型就意味着会进行**按位复制**  
+
+by the way，对`Option`实行绑定的时候会根据`Some`里面的值是否实现`Copy`特型来决定是否发生移动  
+
+当`Some`内绑定的不是实现了`Copy`特型的类型
+
+```rust  
+fn main() {
+    let x = Some(String::from("haha"));
+    let y = x;
+    println!("{:?}"，x);
+                    ^ value borrowed here after move
+    println!("{:?}"，y);
+}
+```  
+
+但是这里什么也不会发生，一切正常：  
+
+```rust  
+fn main() {
+    let x = Some(1);
+    let y = x;
+    println!("{:?}"，x);
+    println!("{:?}"，y);
+}
+```
+
+### 待解决的问题  
+
+***  
+
+1. 完成剩余的rustlings  
+
+### 感想与总结  
+
+***  
+
+1. 今天的查漏补缺做的还是比较到位的，注意到了很多细节  
